@@ -173,7 +173,7 @@ bigramas <- genero %>%
   unite(palabra1, palabra2, col="bigrama", sep=" ") %>% 
   group_by(bigrama) %>% 
   count() %>% 
-  arrange(desc(freq)) 
+  arrange(desc(n)) 
 
 glimpse(bigramas)
 
@@ -191,16 +191,16 @@ final %>%
 
 final %>% 
   filter(!is.na(genero)) %>% 
-  dplyr::select(genero, date) %>% 
-  group_by(date) %>% 
-  count() %>%
-  ungroup() %>% 
-  ggplot(aes(date, freq, color=genero, group = 1))+
-  geom_point()+
-  geom_path()+
-  labs(title = 'Frecuencia de menciones de la palabra "feminazi"',
+  group_by(genero) %>% 
+  count() %>% 
+  ggplot(aes(x="", y=n, fill=genero))+
+  geom_bar(stat = "identity",color="white")+
+  geom_text(aes(label=n),
+  position=position_stack(vjust=0.5),color="white",size=6)+
+  coord_polar(theta="y")+
+  labs(title = 'Proporción género',
        subtitle = '',
-       caption = "Desarrollado por @elcerebrohabla",
+       caption = "Fuente: API de Twitter",
        x = "",
        y = "")+
   #scale_y_continuous(breaks = c(1,2), limits = c(1, 2))+
@@ -209,7 +209,7 @@ final %>%
     plot.title = element_text(size = 26, face = "bold"),
     legend.title = element_text(size = 18),
     legend.text = element_text(size=18),
-    legend.position = "none",
+    legend.position = "bottom",
     plot.subtitle = element_text(size = 16),
     plot.caption = element_text(size = 12),
     axis.text = element_text(size = 14),
